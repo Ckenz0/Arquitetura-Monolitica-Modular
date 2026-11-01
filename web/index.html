@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24483c">
+  <title>Entrelinhas · Sua livraria, mais perto</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar">
+    <div class="wrap header">
+      <a class="brand" href="/" aria-label="Entrelinhas, início">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 8c-4-3-8-3-12-2v20c5-1 8-1 12 2 4-3 7-3 12-2V6c-4-1-8-1-12 2Zm0 0v20" stroke="currentColor" stroke-width="1.5"/><path d="M8 11h4M8 15h4M20 11h4M20 15h4" stroke="currentColor"/></svg>
+        <span>entrelinhas<small>livraria & encontros</small></span>
+      </a>
+      <nav aria-label="Navegação principal">
+        <button class="nav-item" data-tab="catalogo" aria-current="page">Catálogo</button>
+        <button class="nav-item" data-tab="visita">Minha visita</button>
+        <button class="nav-item" data-tab="comunidade">Comunidade</button>
+        <button class="nav-item" data-tab="perfil">Meu perfil</button>
+      </nav>
+      <button class="icon-button" data-action="notificacoes" aria-label="Abrir notificações">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 17h14l-2-3V9a5 5 0 0 0-10 0v5l-2 3Zm5 3h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="badge" id="notification-count" hidden>0</span>
+      </button>
+    </div>
+  </header>
+  <main class="wrap" id="conteudo" tabindex="-1">
+    <div id="connection-status" class="notice" role="alert" hidden><span>Não foi possível carregar a livraria.</span><button class="btn secondary" data-action="atualizar">Tentar novamente</button></div>
+    <section data-panel="catalogo" aria-label="Catálogo de livros">
+      <div class="hero">
+        <div><div class="eyebrow">Entre uma página e outra, encontre-se.</div><h1>Sua próxima história<br>começa <em>aqui.</em></h1><p>Descubra um livro, reserve sua próxima leitura e venha nos visitar.<br>O encontro com uma boa história pode estar logo ali.</p></div>
+        <aside class="store-note"><strong><span class="dot"></span>Planeje sua visita</strong><p id="hero-hours">Consultando o horário da loja…</p><p id="hero-occupancy"></p><button class="btn link" data-tab="visita">Conhecer os serviços da loja →</button></aside>
+      </div>
+      <form id="filtros" class="toolbar" role="search">
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5"/><path d="m15 15 5 5" stroke="currentColor" stroke-width="1.5"/></svg><input id="busca" name="q" type="search" placeholder="Busque por título ou autor" aria-label="Buscar por título ou autor"></div>
+        <select id="genero" name="genero" aria-label="Filtrar por gênero"><option value="">Todos os gêneros</option></select>
+        <label class="check"><input type="checkbox" id="lancamentos" name="lancamentos">Novidades da semana</label>
+        <button class="btn secondary scan" type="button" data-action="escanear"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M7 7v10M10 7v10M14 7v10M17 7v10" stroke="currentColor" stroke-width="1.5"/></svg>Escanear livro</button>
+      </form>
+      <div class="section-head"><h2>Encontre sua próxima leitura</h2><span id="catalog-count" class="subtle" aria-live="polite">Carregando catálogo…</span></div>
+      <div id="catalogo-livros" class="book-grid" aria-busy="true"></div>
+      <section class="recommendations"><div class="section-head"><h2>Escolhidos para você</h2><span class="subtle">A partir das suas leituras e preferências</span></div><div id="recomendacoes"></div></section>
+    </section>
+    <section data-panel="visita" aria-label="Minha visita à loja" hidden>
+      <div class="page-heading"><div class="eyebrow">A gente espera por você</div><h1>Uma visita bem planejada.</h1><p class="subtle">Seus livros separados, um bom atendimento e mais tempo para explorar.</p></div>
+      <div class="columns"><div><section class="panel"><h2>Minhas reservas</h2><div id="reservas"></div></section><section class="panel"><h2>Atendimento com um livreiro</h2><p class="subtle">Escolha entre os horários disponibilizados pela loja.</p><form id="agendamento-form"><div class="field"><label for="agendamento-horario">Livreiro e horário</label><select id="agendamento-horario" name="horario_id" required><option value="">Carregando…</option></select></div><button class="btn" type="submit">Agendar atendimento</button></form><div id="agendamentos" class="list"></div></section></div>
+      <div><section class="panel"><h2>Na livraria</h2><div id="loja-info"></div><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><h3>Fila virtual do caixa</h3><p class="subtle" id="fila-posicao">Entre na fila ao chegar à loja.</p><button class="btn secondary" data-action="fila" id="fila-button">Entrar na fila</button></section><div class="notice">O prazo da retirada é escolhido por você. Acompanhe aqui a confirmação de que seu livro está pronto.</div></div></div>
+    </section>
+    <section data-panel="comunidade" aria-label="Eventos e comunidade" hidden>
+      <div class="page-heading"><div class="eyebrow">Histórias ficam melhores quando compartilhadas</div><h1>Além das páginas.</h1><p class="subtle">Encontros, novas perspectivas e gente que também ama ler.</p></div>
+      <div class="columns"><section class="panel"><h2>Agenda da livraria</h2><div id="eventos" class="list"></div></section><section class="panel"><h2>Clubes de leitura</h2><div id="clubes" class="list"></div></section></div>
+    </section>
+    <section data-panel="perfil" aria-label="Perfil e fidelidade" hidden>
+      <div class="page-heading"><div class="eyebrow">Um espaço para as suas leituras</div><h1>Seu capítulo por aqui.</h1><p class="subtle">Seus desejos, suas preferências e os benefícios de cada visita.</p></div>
+      <div class="columns"><div><section class="panel"><h2>Seu cartão fidelidade</h2><p class="subtle">Apresente o cartão digital no caixa da loja física.</p><div id="fidelidade"></div><h3 style="margin-top:24px">Cupons exclusivos</h3><div id="cupons"></div></section><section class="panel"><h2>Histórico de compras</h2><div id="historico" class="list"></div></section></div>
+      <div><section class="panel"><h2>Lista de desejos</h2><div id="desejos" class="list"></div></section><section class="panel"><h2>Do seu jeito</h2><p class="subtle">Escolha seus gêneros e os assuntos sobre os quais quer ser avisado.</p><form id="preferencias-form"><div id="preferencias-opcoes"></div><button class="btn" type="submit">Salvar preferências</button></form></section></div></div>
+    </section>
+  </main>
+  <footer><div class="wrap"><span>entrelinhas · histórias, pessoas e encontros.</span><span>Ambiente de demonstração · informações ilustrativas da loja</span></div></footer>
+
+  <dialog id="book-dialog" aria-labelledby="book-title"><div id="book-details"></div></dialog>
+  <dialog id="reserve-dialog" aria-labelledby="reserve-title"><div class="dialog-heading"><h2 id="reserve-title">Reserve sua leitura</h2><button class="close" data-close aria-label="Fechar">×</button></div><p id="reserve-book" class="subtle"></p><form id="reserve-form"><input type="hidden" name="livro_id"><div class="field"><label for="reserve-deadline">Até quando você vai retirar?</label><input id="reserve-deadline" name="prazo" type="datetime-local" required></div><label class="check" style="margin-bottom:22px"><input id="reserve-gift" name="embrulho" type="checkbox">É um presente: quero embrulho especial</label><button type="submit" class="btn" style="width:100%">Confirmar reserva</button></form></dialog>
+  <dialog id="deadline-dialog" aria-labelledby="deadline-title"><div class="dialog-heading"><h2 id="deadline-title">Prazo de retirada</h2><button class="close" data-close aria-label="Fechar">×</button></div><form id="deadline-form"><input type="hidden" name="reserva_id"><div class="field"><label for="new-deadline">Novo prazo</label><input id="new-deadline" type="datetime-local" name="prazo" required></div><button class="btn" type="submit">Atualizar prazo</button></form></dialog>
+  <dialog id="scan-dialog" aria-labelledby="scan-title"><div class="dialog-heading"><h2 id="scan-title">Conheça o livro</h2><button class="close" data-close aria-label="Fechar">×</button></div><p class="subtle">Leia o código de barras pela câmera ou informe o número impresso no livro.</p><video id="camera" autoplay playsinline muted hidden></video><p id="camera-status" class="subtle" aria-live="polite"></p><button class="btn secondary" data-action="camera" style="margin-bottom:20px">Usar a câmera</button><form id="scan-form"><div class="field"><label for="barcode">Código de barras</label><input id="barcode" name="codigo" inputmode="numeric" autocomplete="off" placeholder="Ex.: 9788535914849" required></div><button class="btn" type="submit">Consultar livro</button></form></dialog>
+  <dialog id="notifications-dialog" aria-labelledby="notifications-title"><div class="dialog-heading"><h2 id="notifications-title">Suas notificações</h2><button class="close" data-close aria-label="Fechar">×</button></div><div id="notificacoes" class="list"></div><p class="subtle" style="margin:22px 0 0">Você escolhe os temas em Meu perfil.</p></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/static/config.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

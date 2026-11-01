@@ -1,0 +1,1347 @@
+openapi: 3.1.0
+info:
+  title: Entrelinhas — Monólito modular
+  version: 1.0.0
+  description: Aplicação única com seis módulos de negócio e frontend na mesma origem.
+    Dados em memória, um processo com threads. Identificação anônima Bearer; sem login
+    ou pagamentos.
+servers:
+- url: http://127.0.0.1:5000
+  description: Aplicação única local.
+security:
+- SessaoAnonima: []
+paths:
+  /api/health:
+    get:
+      operationId: saude
+      summary: saude
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: ok
+                required:
+                - status
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      security: []
+  /api/sessoes:
+    post:
+      operationId: criar_sessao_anonima
+      summary: criar sessao anonima
+      description: 'Cria identidade anônima, sem login, válida por 86400 segundos.
+        Sem cookie; enviar token em Authorization: Bearer. Corpo ausente ou {}. Não
+        recebe cliente_id. Reiniciar o backend remove dados em memória; a chave estável
+        preserva a assinatura, mas não recupera os dados.'
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sessao'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+              additionalProperties: false
+  /api/estado:
+    get:
+      operationId: consultar_estado
+      summary: consultar estado
+      description: Estado da sessão. Inclui lembretes processados no servidor, sem
+        envio externo de mensagens.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estado'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+  /api/livros:
+    get:
+      operationId: buscar_livros
+      summary: buscar livros
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Livro'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+        description: Busca parcial por título ou autor, sem diferenciar caixa.
+      - name: genero
+        in: query
+        schema:
+          type: string
+        description: Correspondência completa sem diferenciar caixa.
+      - name: lancamentos
+        in: query
+        schema:
+          type: string
+        description: Use 1 para listar apenas lançamentos.
+  /api/livros/{livro_id}:
+    get:
+      operationId: consultar_livro
+      summary: consultar livro
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Livro'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      parameters:
+      - name: livro_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/livros/{livro_id}/avaliacoes:
+    post:
+      operationId: publicar_avaliacao
+      summary: publicar avaliacao
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avaliacao'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nota:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                texto:
+                  type: string
+                  minLength: 1
+                  pattern: \S
+              required:
+              - nota
+              - texto
+              additionalProperties: false
+      parameters:
+      - name: livro_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/codigo/{codigo}:
+    get:
+      operationId: consultar_codigo
+      summary: consultar codigo
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Livro'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      parameters:
+      - name: codigo
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/avisos-estoque:
+    post:
+      operationId: acompanhar_estoque
+      summary: acompanhar estoque
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  livro_id:
+                    type: string
+                  acompanhando:
+                    type: boolean
+                required:
+                - livro_id
+                - acompanhando
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro_id:
+                  type: string
+              required:
+              - livro_id
+  /api/reservas:
+    post:
+      operationId: reservar_livro
+      summary: reservar livro
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro_id:
+                  type: string
+                prazo:
+                  type: string
+                  format: date-time
+                  description: Prazo futuro.
+                embrulho:
+                  type: boolean
+              required:
+              - livro_id
+              - prazo
+  /api/reservas/{reserva_id}:
+    patch:
+      operationId: alterar_prazo
+      summary: alterar prazo
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prazo:
+                  type: string
+                  format: date-time
+              required:
+              - prazo
+      parameters:
+      - name: reserva_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/reservas/{reserva_id}/cancelar:
+    post:
+      operationId: cancelar_reserva
+      summary: cancelar reserva
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+      parameters:
+      - name: reserva_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/fila:
+    post:
+      operationId: entrar_fila
+      summary: entrar fila
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fila'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+  /api/agendamentos:
+    post:
+      operationId: agendar_livreiro
+      summary: agendar livreiro
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Horario'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                horario_id:
+                  type: string
+              required:
+              - horario_id
+  /api/eventos/{evento_id}/inscricoes:
+    post:
+      operationId: inscrever_evento
+      summary: inscrever evento
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evento_id:
+                    type: string
+                  confirmada:
+                    type: boolean
+                required:
+                - evento_id
+                - confirmada
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+      parameters:
+      - name: evento_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/clubes/{clube_id}/participar:
+    post:
+      operationId: participar_clube
+      summary: participar clube
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clube_id:
+                    type: string
+                  participando:
+                    type: boolean
+                required:
+                - clube_id
+                - participando
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+      parameters:
+      - name: clube_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/clubes/{clube_id}/opinioes:
+    post:
+      operationId: publicar_opiniao
+      summary: publicar opiniao
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opiniao'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                texto:
+                  type: string
+              required:
+              - texto
+      parameters:
+      - name: clube_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/desejos:
+    post:
+      operationId: adicionar_desejo
+      summary: adicionar desejo
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '201':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Livro'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                livro_id:
+                  type: string
+              required:
+              - livro_id
+  /api/preferencias:
+    patch:
+      operationId: alterar_preferencias
+      summary: alterar preferencias
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preferencias'
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                generos:
+                  type: array
+                  items:
+                    type: string
+                temas_notificacao:
+                  type:
+                  - array
+                  - 'null'
+                  items:
+                    type: string
+                    enum:
+                    - estoque
+                    - reservas
+                    - fidelidade
+                    - eventos
+              required: []
+              additionalProperties: false
+              minProperties: 1
+  /api:
+    get:
+      operationId: informacoes_api
+      summary: informacoes api
+      description: JSON. Não repetir mutações automaticamente; consultar o estado
+        antes de tentar novamente se a resposta se perder.
+      responses:
+        '200':
+          description: Operação concluída.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  servico:
+                    type: string
+                  health:
+                    type: string
+                required:
+                - servico
+                - health
+        '400':
+          $ref: '#/components/responses/Erro400'
+        '401':
+          $ref: '#/components/responses/Erro401'
+        '403':
+          $ref: '#/components/responses/Erro403'
+        '404':
+          $ref: '#/components/responses/Erro404'
+        '405':
+          $ref: '#/components/responses/Erro405'
+        '409':
+          $ref: '#/components/responses/Erro409'
+        '413':
+          $ref: '#/components/responses/Erro413'
+        '415':
+          $ref: '#/components/responses/Erro415'
+        '500':
+          $ref: '#/components/responses/Erro500'
+      security: []
+components:
+  securitySchemes:
+    SessaoAnonima:
+      type: http
+      scheme: bearer
+      description: Token anônimo assinado obtido em POST /api/sessoes; não é cadastro/login.
+  schemas:
+    Erro:
+      type: object
+      properties:
+        erro:
+          type: string
+      required:
+      - erro
+    Sessao:
+      type: object
+      properties:
+        token:
+          type: string
+        tipo:
+          type: string
+          const: Bearer
+        expira_em_segundos:
+          type: integer
+          const: 86400
+      required:
+      - token
+      - tipo
+      - expira_em_segundos
+    Avaliacao:
+      type: object
+      properties:
+        id:
+          type: string
+        cliente:
+          type: string
+        nota:
+          type: integer
+          minimum: 1
+          maximum: 5
+        texto:
+          type: string
+        data:
+          type: string
+          format: date-time
+      required:
+      - id
+      - cliente
+      - nota
+      - texto
+      - data
+    AvaliacaoIlustrativa:
+      type: object
+      properties:
+        cliente:
+          type: string
+        texto:
+          type: string
+      required:
+      - cliente
+      - texto
+      additionalProperties: false
+    Livro:
+      type: object
+      properties:
+        id:
+          type: string
+        titulo:
+          type: string
+        autor:
+          type: string
+        genero:
+          type: string
+        estoque:
+          type: integer
+          minimum: 0
+        ano:
+          type: integer
+        lancamento:
+          type: boolean
+        preco:
+          type: number
+        codigo:
+          type: string
+        secao:
+          type: string
+        prateleira:
+          type: string
+        sinopse:
+          type: string
+        avaliacoes:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Avaliacao'
+            - $ref: '#/components/schemas/AvaliacaoIlustrativa'
+        ja_avaliou:
+          type: boolean
+      required:
+      - id
+      - titulo
+      - autor
+      - genero
+      - estoque
+    Reserva:
+      type: object
+      properties:
+        id:
+          type: string
+        cliente_id:
+          type: string
+        livro_id:
+          type: string
+        titulo:
+          type: string
+        prazo:
+          type: string
+          format: date-time
+        embrulho:
+          type: boolean
+        status:
+          type: string
+          enum:
+          - pendente
+          - pronta
+          - cancelada
+      required:
+      - id
+      - cliente_id
+      - livro_id
+      - titulo
+      - prazo
+      - embrulho
+      - status
+    Preferencias:
+      type: object
+      properties:
+        generos:
+          type: array
+          items:
+            type: string
+        temas_notificacao:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - estoque
+            - reservas
+            - fidelidade
+            - eventos
+      required:
+      - generos
+      - temas_notificacao
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: string
+        generos:
+          type: array
+          items:
+            type: string
+        temas_notificacao:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      required:
+      - id
+      - generos
+      - temas_notificacao
+    Cupom:
+      type: object
+      properties:
+        codigo:
+          type: string
+        termos:
+          type: string
+      required:
+      - codigo
+      - termos
+    Fidelidade:
+      type: object
+      properties:
+        saldo:
+          type: integer
+          minimum: 0
+        cartao:
+          type: object
+          properties:
+            cliente_id:
+              type: string
+            numero:
+              type: string
+          required:
+          - cliente_id
+          - numero
+        cupons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cupom'
+      required:
+      - saldo
+      - cartao
+      - cupons
+    Horario:
+      type: object
+      properties:
+        id:
+          type: string
+        livreiro:
+          type: string
+        quando:
+          type: string
+          format: date-time
+        cliente_id:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - livreiro
+      - quando
+    Evento:
+      type: object
+      properties:
+        id:
+          type: string
+        titulo:
+          type: string
+        quando:
+          type: string
+        local:
+          type: string
+        capacidade:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+        lembrar_em:
+          type:
+          - string
+          - 'null'
+        inscrito:
+          type: boolean
+        vagas:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+      required:
+      - id
+      - titulo
+      - quando
+      - local
+      - capacidade
+      - lembrar_em
+      - inscrito
+      - vagas
+    Opiniao:
+      type: object
+      properties:
+        cliente:
+          type: string
+        texto:
+          type: string
+      required:
+      - cliente
+      - texto
+    Clube:
+      type: object
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        participando:
+          type: boolean
+        membros:
+          type: integer
+          minimum: 0
+        opinioes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Opiniao'
+      required:
+      - id
+      - nome
+      - participando
+      - membros
+      - opinioes
+    Compra:
+      type: object
+      properties:
+        id:
+          type: string
+        livro:
+          $ref: '#/components/schemas/Livro'
+        pontos:
+          type: integer
+          minimum: 0
+        data:
+          type: string
+        expira_em:
+          type:
+          - string
+          - 'null'
+        avisar_em:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - livro
+      - pontos
+      - data
+      - expira_em
+      - avisar_em
+    Notificacao:
+      type: object
+      properties:
+        id:
+          type: string
+        tema:
+          type: string
+        mensagem:
+          type: string
+        data:
+          type: string
+      required:
+      - id
+      - tema
+      - mensagem
+      - data
+    Fila:
+      type: object
+      properties:
+        posicao:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+      required:
+      - posicao
+    Estado:
+      type: object
+      properties:
+        cliente:
+          $ref: '#/components/schemas/Cliente'
+        livros:
+          type: array
+          items:
+            $ref: '#/components/schemas/Livro'
+        reservas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reserva'
+        fidelidade:
+          $ref: '#/components/schemas/Fidelidade'
+        loja:
+          type: object
+          properties:
+            horario:
+              type: string
+            lotacao:
+              type: integer
+              minimum: 0
+          required:
+          - horario
+          - lotacao
+        fila:
+          $ref: '#/components/schemas/Fila'
+        horarios:
+          type: array
+          items:
+            $ref: '#/components/schemas/Horario'
+        agendamentos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Horario'
+        eventos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evento'
+        clubes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Clube'
+        desejos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Livro'
+        historico:
+          type: array
+          items:
+            $ref: '#/components/schemas/Compra'
+        recomendacoes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Livro'
+        notificacoes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notificacao'
+      required:
+      - cliente
+      - livros
+      - reservas
+      - fidelidade
+      - loja
+      - fila
+      - horarios
+      - agendamentos
+      - eventos
+      - clubes
+      - desejos
+      - historico
+      - recomendacoes
+      - notificacoes
+  responses:
+    Erro400:
+      description: Entrada inválida.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro401:
+      description: Sessão ausente, inválida ou expirada.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro403:
+      description: Origem não permitida.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro404:
+      description: Recurso não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro405:
+      description: Método não permitido.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro409:
+      description: Conflito com o estado atual.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro413:
+      description: Corpo acima de 1 MiB.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro415:
+      description: Tipo de conteúdo inválido.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+    Erro500:
+      description: Erro interno sem detalhes privados.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'

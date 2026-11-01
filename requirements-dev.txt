@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8,<9
+pytest-bdd>=8,<9
+playwright>=1.51,<2
+PyYAML>=6,<7
+openapi-spec-validator>=0.7,<0.8
